@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Augustine Wisely Bezalel — three questions for the Tan lab.">
+</head>
+<body>
+<title>Augustine Wisely Bezalel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F7F5F0;
+  --panel:#FFFFFF;
+  --ink:#15171C;
+  --muted:#6B6F76;
+  --rule:#DCD7CD;
+  --accent:#0E6F74;
+  --accent-2:#C2572B;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1113;--panel:#15181B;--ink:#E9E7E2;--muted:#8E949C;
+    --rule:#262A2F;--accent:#4FB3B8;--accent-2:#E08A5B;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1113;--panel:#15181B;--ink:#E9E7E2;--muted:#8E949C;
+  --rule:#262A2F;--accent:#4FB3B8;--accent-2:#E08A5B;color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--sans);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:clamp(24px,5vw,48px);
+  line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(20px,3.4vw,32px)}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0;
+}
+h1{
+  font-size:clamp(26px,5.2vw,40px);line-height:1.08;margin:6px 0 0;font-weight:600;
+  letter-spacing:-.02em;text-wrap:balance;
+}
+.standfirst{margin:10px 0 0;max-width:58ch;color:var(--muted);font-size:clamp(14px,1.9vw,16px)}
+.standfirst b{color:var(--ink);font-weight:500}
+
+.panel{
+  background:var(--panel);border:1px solid var(--rule);border-radius:3px;
+  padding:clamp(14px,2.4vw,20px);
+}
+.panel-head{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.tag{
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.1em;
+  color:var(--paper);background:var(--ink);padding:2px 6px;border-radius:2px;
+}
+.panel-head h2{
+  margin:0;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-family:var(--mono);
+}
+
+.plot{position:relative;width:100%;aspect-ratio:16/8;max-width:100%;min-height:210px}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.node{
+  position:absolute;transform:translate(-50%,-50%);
+  background:none;border:0;padding:8px 9px;margin:0;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--muted);
+  white-space:nowrap;border-radius:3px;transition:color .18s ease;
+}
+.node:hover{color:var(--ink)}
+.node[aria-current="true"]{color:var(--accent);font-weight:500}
+.node:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+.legend{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:baseline;margin-top:14px}
+.legend .k{font-family:var(--mono);font-size:12px;color:var(--accent-2);white-space:nowrap}
+.legend h3{margin:0;font-size:clamp(15px,2.2vw,17px);font-weight:600;letter-spacing:-.01em}
+.legend p{grid-column:2;margin:2px 0 0;font-size:14.5px;color:var(--muted);max-width:60ch;min-width:0}
+.legend p em{color:var(--ink);font-style:normal;font-weight:500}
+
+.bring{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.bring li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;font-size:14.5px;min-width:0}
+.bring span{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+
+footer{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;
+  padding-top:4px;font-family:var(--mono);font-size:12.5px;color:var(--muted);
+}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+footer a:hover{border-bottom-color:var(--accent)}
+.mail{display:inline-flex;align-items:center;gap:8px}
+.mail code{font-family:var(--mono);font-size:12.5px;color:var(--ink);user-select:all}
+.copy{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  background:none;border:1px solid var(--rule);color:var(--muted);
+  padding:3px 7px;border-radius:2px;cursor:pointer;
+}
+.copy:hover{color:var(--ink);border-color:var(--muted)}
+nav{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-top:4px}
+nav button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+  padding:8px 2px;margin-right:22px;cursor:pointer;transition:color .16s ease;
+}
+nav button:hover{color:var(--ink)}
+nav button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent-2)}
+nav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page{display:flex;flex-direction:column;gap:clamp(20px,3.4vw,32px)}
+.page[hidden]{display:none}
+
+.tracks{display:grid;gap:0}
+.track{border-top:1px solid var(--rule)}
+.track:first-child{border-top:0}
+.track>button{
+  width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:baseline;
+  background:none;border:0;padding:13px 0;margin:0;cursor:pointer;text-align:left;color:inherit;
+  font-family:inherit;
+}
+.track>button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.track .num{font-family:var(--mono);font-size:11px;color:var(--accent-2);letter-spacing:.08em}
+.track .ttl{font-size:clamp(15px,2.3vw,18px);font-weight:600;letter-spacing:-.012em;min-width:0;line-height:1.3}
+.track .sting{display:block;margin-top:3px;font-size:14px;font-weight:400;color:var(--muted);letter-spacing:0}
+.track[data-open="true"] .sting{color:var(--ink)}
+.track .chev{font-family:var(--mono);font-size:13px;color:var(--muted);transition:transform .2s ease}
+.track[data-open="true"] .chev{transform:rotate(45deg)}
+.track[data-open="true"] .ttl{color:var(--accent)}
+.body{display:none;padding:0 0 15px 0;margin-left:28px}
+.track[data-open="true"] .body{display:block}
+.body p{margin:0 0 9px;font-size:14.5px;color:var(--muted);max-width:62ch}
+.body p:last-child{margin-bottom:0}
+.body em{color:var(--ink);font-style:normal;font-weight:500}
+.body .why{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;color:var(--accent);
+  border-left:2px solid var(--rule);padding-left:10px;
+}
+
+.cite{
+  font-family:var(--mono);font-size:11px;line-height:1.55;color:var(--muted);
+  margin:0 0 14px;max-width:70ch;
+}
+.cite i{color:var(--ink);font-style:normal}
+.qfig{position:relative;width:100%;aspect-ratio:16/5.4;min-height:148px;margin-bottom:4px}
+.qfig canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+.capwrap{position:relative;width:100%;aspect-ratio:16/7;min-height:200px}
+.capwrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.controls{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;margin-top:14px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.seg button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;background:none;border:0;
+  color:var(--muted);padding:8px 11px;cursor:pointer;
+}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.hint{
+  font-family:var(--mono);font-size:11.5px;color:var(--accent-2);letter-spacing:.02em;
+  flex-basis:100%;min-height:1.4em;
+}
+.mine{
+  margin:0 0 13px;font-size:14px;color:var(--muted);max-width:62ch;
+  border-left:2px solid var(--accent-2);padding-left:11px;
+}
+.mine b{color:var(--ink);font-weight:500}
+.eq{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.02em}
+
+.prose p{margin:0 0 9px;font-size:14.5px;max-width:64ch}
+.prose p:last-child{margin-bottom:0}
+.prose p.lead{font-size:14.5px;font-weight:400;letter-spacing:0}
+.prose strong{font-weight:500}
+
+@media (max-width:520px){
+  .legend{grid-template-columns:1fr;gap:2px}
+  .legend p{grid-column:1}
+  .node{font-size:10px;padding:7px}
+  nav button{margin-right:16px;font-size:10px}
+  .body{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">for the tan lab · lkcmedicine, ntu</p>
+    <h1>Augustine Wisely Bezalel</h1>
+    <p class="standfirst" id="sf">four years of work on one problem: <b>reading internal states out of messy signals</b>.</p>
+  </header>
+
+  <nav>
+    <button data-p="1" aria-current="true">01 · what i'd contribute</button>
+    <button data-p="2">02 · how i read your result</button>
+    <button data-p="3">03 · what i've done</button>
+  </nav>
+
+  <div class="page" id="p1">
+  <section class="panel">
+    <div class="panel-head"><span class="tag">A</span><h2>three questions, after reading closely · tap one</h2></div>
+    <p class="cite">from <i>The gut&ndash;brain axis mediates sugar preference</i> — Nature 580, 2020 — <i>Gut&ndash;brain circuits for fat preference</i>, Nature 610, 2022 — and the 2026 capsaicin result in <i>Nutrients</i>.</p>
+    <div class="qfig"><canvas id="qf" aria-label="schematic of the selected question" role="img"></canvas></div>
+    <div class="tracks">
+
+      <div class="track">
+        <button aria-expanded="false"><span class="num">01</span><span class="ttl">the preference switches somewhere inside 48 hours.<span class="sting">the lick timestamps already contain the hour it flips. what does that curve look like?</span></span><span class="chev">+</span></button>
+        <div class="body">
+          <p>By 48 h the animals drink almost exclusively from the sugar bottle. The decision happens somewhere inside that window, and the two-bottle rig records it continuously — so the transition is already on disk, at a resolution no endpoint measure keeps.</p>
+          <p><em>Is it a drift or a step?</em> And does it land at the same hour in every animal? A changepoint fit per animal turns a group effect into a per-animal latency — one number that can then be regressed against anything else measured in the same mouse.</p>
+          <p class="why">existing data, existing rig. a time constant where there was a bar chart.</p>
+        </div>
+      </div>
+
+      <div class="track">
+        <button aria-expanded="false"><span class="num">02</span><span class="ttl">capsaicin protects against obesity, and depletion abolishes it.<span class="sting">so the causal variable lives in the community. which feature of it?</span></span><span class="chev">+</span></button>
+        <div class="body">
+          <p>Ruling out host TRPV1 and showing the microbiome is obligatory is the hard half, and it's done. What it leaves open is which part of the community carries the effect — the result names a requirement, not a mediator.</p>
+          <p>16S and metabolomics sampled as a <em>trajectory</em> rather than as endpoints, then a model that predicts the metabolic outcome from the time course rather than from the final composition. The order in which the community changes is itself the evidence.</p>
+          <p class="why">the same assays, read along time instead of across groups.</p>
+        </div>
+      </div>
+
+      <div class="track">
+        <button aria-expanded="false"><span class="num">03</span><span class="ttl">chronic stress alters the microbiome — the efferent direction.<span class="sting">the readout at the other end is behaviour. how finely is behaviour measured?</span></span><span class="chev">+</span></button>
+        <div class="body">
+          <p>Your review names the efferent brain&ndash;gut&ndash;microbiota axis as the direction that would be transformative and is the less studied one. The stress exposure can be timed precisely; the microbiome is sampled on a schedule; behaviour is usually the coarsest term in that equation.</p>
+          <p><em>DeepLabCut</em> then <em>keypoint-MoSeq</em> gives a continuous behavioural time series from video you'd be recording anyway — syllable usage per hour, validated on held-out animals. Two directions can only be separated when both ends are measured in time.</p>
+          <p class="why">this is the part i can build on week one.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="panel prose">
+    <div class="panel-head"><span class="tag">B</span><h2>why this lab</h2></div>
+    <p class="lead">Four years reading internal states out of signals that were never meant to carry them. A dog's bark. A child's gaze. A radio wave off a moving body.</p>
+    <p class="lead">Always inferring from the outside. Yours is the lab that measures the channel I kept inferring around.</p>
+  </section>
+  </div>
+
+  <div class="page" id="p2" hidden>
+  <section class="panel">
+    <div class="panel-head"><span class="tag">C</span><h2>my reading of the sugar result · an engineer's version</h2></div>
+    <p class="mine"><b>I read it as two sensors on one stimulus, running at different rates.</b> The tongue is fast and can be spoofed. The gut is slow, and transduces the molecule itself at SGLT-1. Preference is the brain deciding which sensor to trust — and silencing the relay between them stops the decision being made at all. <span class="eq">&tau;<sub>gut</sub> ≈ tens of hours</span></p>
+    <div class="capwrap"><canvas id="cap"></canvas></div>
+    <div class="controls">
+      <span class="seg" role="group" aria-label="stimulus">
+        <button id="s-glu" aria-pressed="true">glucose</button>
+        <button id="s-ace" aria-pressed="false">sweetener</button>
+        <button id="s-mdg" aria-pressed="false">MDG</button>
+      </span>
+      <span class="seg" role="group" aria-label="gut-to-brain relay">
+        <button id="g-on" aria-pressed="true">relay intact</button>
+        <button id="g-off" aria-pressed="false">vagal silencing</button>
+      </span>
+      <span class="hint" id="hint">near-exclusive on sugar by 48 h.</span>
+    </div>
+  </section>
+
+  <section class="panel prose">
+    <div class="panel-head"><span class="tag">D</span><h2>what the reading buys</h2></div>
+    <p>A sweetener is an <strong>adversarial input to the fast sensor</strong> — it passes the tongue, arrives in the gut, and goes unread there. That's why sweet taste alone can't hold a preference.</p>
+    <p>MDG is the part that makes the reading work. A <strong>non-metabolizable</strong> analogue still drives the switch, so the slow sensor is keyed to molecular identity, not to energy. It's a chemical detector, not a calorie meter.</p>
+    <p>And 24&ndash;48 h stops looking like a learning rate and starts looking like an <strong>integration time</strong> — the window the slow channel needs before its estimate outweighs the fast one.</p>
+    <p class="lead">Which would make individual differences a difference in sensor gain.</p>
+  </section>
+  </div>
+
+  <div class="page" id="p3" hidden>
+  <section class="panel">
+    <div class="panel-head"><span class="tag">E</span><h2>state space of prior work</h2></div>
+    <div class="plot">
+      <canvas id="c"></canvas>
+      <button class="node" data-i="0" aria-current="true">affect from sound</button>
+      <button class="node" data-i="1">attention from gaze</button>
+      <button class="node" data-i="2">bodies, no sensors</button>
+      <button class="node" data-i="3">pipelines at scale</button>
+    </div>
+    <div class="legend">
+      <span class="k" id="k">01</span>
+      <h3 id="t">affect from sound</h3>
+      <p id="d">Machine-learning models that classify emotional state from canine vocalisations — acoustic features to supervised classifiers. Presented at the <em>41st World Veterinary Association Congress, Tokyo</em>.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><span class="tag">F</span><h2>what i'd bring</h2></div>
+    <ul class="bring">
+      <li><span>01</span><div>Behavioural time series out of video — pose tracking to syllable segmentation, validated on held-out animals rather than held-out frames.</div></li>
+      <li><span>02</span><div>Pipelines that turn raw recordings into analysable datasets, built to run unattended and documented well enough for someone else to rerun.</div></li>
+      <li><span>03</span><div>Signal processing on faint, noisy, periodic data — the licking, feeding and movement records a lab generates and rarely has time to mine.</div></li>
+    </ul>
+  </section>
+  </div>
+
+  <footer>
+    <span class="mail"><code>augustine0521@gmail.com</code><button class="copy" id="cp">copy</button></span>
+    <a href="https://www.linkedin.com/in/augustine-w-bezalel-5a985a250" target="_blank" rel="noopener">linkedin</a>
+  </footer>
+</div>
+
+<script>
+const DATA = [
+  {k:"01", t:"affect from sound",
+   d:'Machine-learning models that classify emotional state from canine vocalisations — acoustic features to supervised classifiers. Presented at the <em>41st World Veterinary Association Congress, Tokyo</em>.'},
+  {k:"02", t:"attention from gaze",
+   d:'A webcam gaze-tracking system turning raw eye movement into objective attention measures, built for assessing children with ASD. <em>Finalist, NeuroDesign in Human-Robot Interaction</em>.'},
+  {k:"03", t:"bodies, no sensors",
+   d:'Gait disorders detected from Wi-Fi channel state information — nothing worn, nothing seen. Validated on participants the model had never encountered. <em>IEEE SPS SIGMA grant (USD 4,000) with Dr Deepak Mishra, UNSW Sydney; submitted to ICASSP 2027</em>.'},
+  {k:"04", t:"pipelines at scale",
+   d:'An automated FSL/Luigi diffusion-imaging pipeline at <em>UMCG Groningen</em>, run unattended across a cohort; and resting-state fMRI characterisation of dementia on the ADNI dataset.'}
+];
+const P = [[0.13,0.70],[0.39,0.28],[0.63,0.64],[0.88,0.26]];
+const SEG = 110;
+
+const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+const nodes = [...document.querySelectorAll(".node")];
+const kEl = document.getElementById("k"), tEl = document.getElementById("t"), dEl = document.getElementById("d");
+let W = 0, H = 0, path = [], sel = 0, pos = 0, target = 0, col = {};
+let last = performance.now(), dt = 1/60;
+
+function readColors(){
+  const s = getComputedStyle(document.documentElement);
+  col = {
+    rule: s.getPropertyValue("--rule").trim(),
+    accent: s.getPropertyValue("--accent").trim(),
+    accent2: s.getPropertyValue("--accent-2").trim(),
+    muted: s.getPropertyValue("--muted").trim(),
+    panel: s.getPropertyValue("--panel").trim(),
+    ink: s.getPropertyValue("--ink").trim(),
+    paper: s.getPropertyValue("--paper").trim()
+  };
+}
+function catmull(p0,p1,p2,p3,t){
+  const t2=t*t, t3=t2*t;
+  return [
+    0.5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+    0.5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)
+  ];
+}
+function buildPath(){
+  path = [];
+  const pts = [P[0], ...P, P[P.length-1]];
+  for(let i=1;i<pts.length-2;i++){
+    for(let j=0;j<SEG;j++){
+      const [x,y] = catmull(pts[i-1],pts[i],pts[i+1],pts[i+2], j/SEG);
+      path.push([x*W, y*H]);
+    }
+  }
+  const [lx,ly] = P[P.length-1];
+  path.push([lx*W, ly*H]);
+}
+function resize(){
+  const r = cv.getBoundingClientRect();
+  if(!r.width) return;
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  W = r.width; H = r.height;
+  cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  buildPath();
+  nodes.forEach((n,i)=>{
+    n.style.left = (P[i][0]*100) + "%";
+    n.style.top  = (P[i][1]*100 - (i%2 ? 13 : -13)) + "%";
+  });
+}
+function draw(){
+  const now = performance.now();
+  dt = Math.min(0.05, (now - last)/1000); last = now;
+  if(!W){ prefFrame(); qFrame(); requestAnimationFrame(draw); return; }
+  ctx.clearRect(0,0,W,H);
+
+  ctx.strokeStyle = col.rule; ctx.lineWidth = 1;
+  ctx.beginPath();
+  for(let i=1;i<6;i++){ const x=W*i/6; ctx.moveTo(x,0); ctx.lineTo(x,H); }
+  for(let i=1;i<4;i++){ const y=H*i/4; ctx.moveTo(0,y); ctx.lineTo(W,y); }
+  ctx.stroke();
+
+  ctx.strokeStyle = col.accent; ctx.globalAlpha = .34; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(path[0][0], path[0][1]);
+  for(const [x,y] of path) ctx.lineTo(x,y);
+  ctx.stroke(); ctx.globalAlpha = 1;
+
+  P.forEach((p,i)=>{
+    const x=p[0]*W, y=p[1]*H, on = i===sel;
+    if(on){
+      ctx.strokeStyle = col.accent; ctx.globalAlpha = .4; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(x,y,13,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha = .18;
+      ctx.beginPath(); ctx.arc(x,y,20,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    ctx.fillStyle = on ? col.accent : col.muted;
+    ctx.globalAlpha = on ? 1 : .5;
+    ctx.beginPath(); ctx.arc(x,y,on?4.5:3,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+
+  pos += (target - pos) * 0.075;
+  const idx = Math.max(0, Math.min(path.length-1, Math.round(pos)));
+  const [dx,dy] = path[idx];
+  ctx.fillStyle = col.panel;
+  ctx.beginPath(); ctx.arc(dx,dy,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = col.accent2;
+  ctx.beginPath(); ctx.arc(dx,dy,4,0,Math.PI*2); ctx.fill();
+
+  prefFrame();
+  qFrame();
+  requestAnimationFrame(draw);
+}
+function select(i){
+  sel = i; target = i*SEG;
+  const d = DATA[i];
+  kEl.textContent = d.k; tEl.textContent = d.t; dEl.innerHTML = d.d;
+  nodes.forEach((n,j)=> n.setAttribute("aria-current", j===i ? "true" : "false"));
+}
+nodes.forEach(n => n.addEventListener("click", () => select(+n.dataset.i)));
+cv.addEventListener("click", e => {
+  const r = cv.getBoundingClientRect(), mx = e.clientX-r.left, my = e.clientY-r.top;
+  let best = -1, bd = 30;
+  P.forEach((p,i)=>{ const d = Math.hypot(p[0]*W-mx, p[1]*H-my); if(d<bd){ bd=d; best=i; } });
+  if(best >= 0) select(best);
+});
+document.getElementById("cp").addEventListener("click", async e => {
+  const btn = e.currentTarget;
+  try{
+    await navigator.clipboard.writeText("augustine0521@gmail.com");
+    btn.textContent = "copied";
+  }catch{
+    const r = document.createRange();
+    r.selectNodeContents(document.querySelector(".mail code"));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    btn.textContent = "select";
+  }
+  setTimeout(()=>{ btn.textContent = "copy"; }, 1600);
+});
+
+/* ---- page switching ---- */
+const SF = {
+  1: '<b>three questions i came away with</b> from the gut&ndash;brain papers — and where i’d start on each.',
+  2: 'your result, re-derived in the language i think in. <b>run it yourself.</b>',
+  3: 'four years on one problem: <b>reading internal states out of messy signals</b>. that work, plotted as a trajectory — pick a point.'
+};
+const sfEl = document.getElementById("sf");
+const tabs = [...document.querySelectorAll("nav button")];
+const pages = [...document.querySelectorAll(".page")];
+function show(p, push){
+  p = [1,2,3].includes(+p) ? +p : 1;
+  pages.forEach(el => el.hidden = el.id !== "p" + p);
+  tabs.forEach(t => t.setAttribute("aria-current", +t.dataset.p === p ? "true" : "false"));
+  sfEl.innerHTML = SF[p];
+  if(push){
+    try{ history.replaceState(null, "", "#" + p); }catch{}
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  if(p === 1) qResize();
+  if(p === 2) prefResize();
+  if(p === 3) resize();
+}
+tabs.forEach(t => t.addEventListener("click", () => show(+t.dataset.p, true)));
+
+/* ---- accordion ---- */
+document.querySelectorAll(".track > button").forEach((b, i) => {
+  b.addEventListener("click", () => {
+    const tr = b.parentElement, open = tr.dataset.open === "true";
+    document.querySelectorAll(".track").forEach(o => {
+      o.dataset.open = "false";
+      o.querySelector("button").setAttribute("aria-expanded","false");
+    });
+    if(!open){ tr.dataset.open = "true"; b.setAttribute("aria-expanded","true"); }
+    if(qsel !== i){ qsel = i; qt = 0; }
+  });
+  b.addEventListener("mouseenter", () => { if(qsel !== i){ qsel = i; qt = 0; } });
+});
+
+/* ---- page 1 schematics ---- */
+const qCv = document.getElementById("qf"), qx = qCv.getContext("2d");
+let QW = 0, QH = 0, qsel = 0, qt = 0;
+function qResize(){
+  const r = qCv.getBoundingClientRect();
+  if(!r.width) return;
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  QW = r.width; QH = r.height;
+  qCv.width = Math.round(QW*dpr); qCv.height = Math.round(QH*dpr);
+  qx.setTransform(dpr,0,0,dpr,0,0);
+}
+function txt(s, x, y, c, al){ qx.fillStyle = c; qx.textAlign = al || "left"; qx.fillText(s, x, y); }
+function arrow(x1, y1, x2, y2, c, dash){
+  qx.strokeStyle = c; qx.lineWidth = 1.3;
+  if(dash !== false){ qx.setLineDash([4,4]); qx.lineDashOffset = -qt*22; }
+  qx.beginPath(); qx.moveTo(x1,y1); qx.lineTo(x2,y2); qx.stroke(); qx.setLineDash([]);
+  const a = Math.atan2(y2-y1, x2-x1);
+  qx.fillStyle = c; qx.beginPath(); qx.moveTo(x2,y2);
+  qx.lineTo(x2 - 7*Math.cos(a-0.45), y2 - 7*Math.sin(a-0.45));
+  qx.lineTo(x2 - 7*Math.cos(a+0.45), y2 - 7*Math.sin(a+0.45)); qx.fill();
+}
+
+// 01 — the 48 h switch, and where the changepoint sits
+function s0(){
+  const lm = 34, rm = 100, top = 14, bot = QH - 24, pw = QW - lm - rm;
+  qx.strokeStyle = col.rule; qx.lineWidth = 1;
+  qx.beginPath(); qx.moveTo(lm, bot); qx.lineTo(lm + pw, bot); qx.stroke();
+  qx.setLineDash([2,3]);
+  const mid = top + (bot-top)*0.5;
+  qx.beginPath(); qx.moveTo(lm, mid); qx.lineTo(lm + pw, mid); qx.stroke(); qx.setLineDash([]);
+  txt("50%", lm - 4, mid, col.muted, "right");
+  ["0 h","24 h","48 h"].forEach((s,i)=> txt(s, lm + pw*i/2, QH - 9, col.muted, i?(i===2?"right":"center"):"left"));
+
+  const p = Math.min(1, (qt*0.17) % 1.45);
+  qx.strokeStyle = col.accent; qx.lineWidth = 1.8; qx.beginPath();
+  const n = 150;
+  let hx = lm, hy = mid;
+  for(let j=0;j<=n*p;j++){
+    const u = j/n, h = u*48;
+    const v = h < 10 ? 0 : 1 - Math.exp(-(h-10)/9);
+    const y = mid - v*(mid-top)*0.92;
+    const x = lm + u*pw;
+    j ? qx.lineTo(x,y) : qx.moveTo(x,y);
+    hx = x; hy = y;
+  }
+  qx.stroke();
+  qx.fillStyle = col.panel; qx.beginPath(); qx.arc(hx,hy,6,0,7); qx.fill();
+  qx.fillStyle = col.accent2; qx.beginPath(); qx.arc(hx,hy,3.5,0,7); qx.fill();
+
+  const cx0 = lm + pw*(10/48);
+  qx.strokeStyle = col.accent2; qx.lineWidth = 1.4; qx.setLineDash([3,3]);
+  qx.beginPath(); qx.moveTo(cx0, top); qx.lineTo(cx0, bot); qx.stroke(); qx.setLineDash([]);
+  txt("changepoint?", cx0 + 7, top + 8, col.ink);
+  txt("% licks · sugar", QW - 4, top + 10, col.accent, "right");
+}
+
+// 02 — capsaicin: host route out, community route in
+function s1(){
+  const yT = QH*0.3, yB = QH*0.72, x0 = 52, x1 = QW*0.44, x2 = QW - 66;
+  txt("capsaicin", 0, (yT+yB)/2, col.ink);
+  arrow(x0, (yT+yB)/2, x1 - 46, yT, col.muted);
+  arrow(x0, (yT+yB)/2, x1 - 46, yB, col.accent);
+  txt("host TRPV1", x1 - 40, yT, col.muted);
+  txt("microbiome", x1 - 40, yB, col.accent);
+  arrow(x1 + 36, yT, x2 - 6, yT, col.muted);
+  arrow(x1 + 36, yB, x2 - 6, yB, col.accent);
+  txt("protection", x2 + 2, (yT+yB)/2, col.ink);
+
+  const mx = (x1 + 36 + x2 - 6)/2;
+  qx.strokeStyle = col.accent2; qx.lineWidth = 1.8;
+  qx.beginPath(); qx.moveTo(mx-6, yT-6); qx.lineTo(mx+6, yT+6);
+  qx.moveTo(mx+6, yT-6); qx.lineTo(mx-6, yT+6); qx.stroke();
+
+  const pulse = 0.5 + 0.5*Math.sin(qt*2.2);
+  qx.globalAlpha = .18 + .3*pulse; qx.fillStyle = col.accent2;
+  qx.beginPath(); qx.arc(x1 - 10, yB + 16, 9 + 3*pulse, 0, 7); qx.fill(); qx.globalAlpha = 1;
+  txt("which feature?", x1 + 6, yB + 17, col.accent2);
+}
+
+// 03 — efferent vs afferent, and the resolution of the behaviour readout
+function s2(){
+  const yT = QH*0.26, yB = QH*0.70, lm = 54, rm = QW - 150;
+  txt("stress", 0, yT, col.ink);
+  txt("microbiome", 0, yB, col.accent);
+  arrow(lm - 14, yT + 6, lm - 14, yB - 8, col.accent2, false);
+  txt("efferent", lm - 8, (yT+yB)/2, col.accent2);
+
+  const bw = (rm - lm - 90)/3;
+  for(let i=0;i<3;i++){
+    const x = lm + 90 + i*bw;
+    qx.strokeStyle = col.rule; qx.lineWidth = 1;
+    qx.strokeRect(x, yT - 9, bw - 6, 18);
+  }
+  txt("behaviour · scored in blocks", lm + 90, yT - 18, col.muted);
+
+  qx.strokeStyle = col.accent; qx.lineWidth = 1.5; qx.beginPath();
+  const n = 140, pw2 = rm - lm - 90;
+  for(let j=0;j<=n;j++){
+    const u = j/n, x = lm + 90 + u*pw2;
+    const v = Math.sin(u*17 + qt*1.6)*0.5 + Math.sin(u*41 + qt*0.7)*0.26;
+    const y = yB + v*11;
+    j ? qx.lineTo(x,y) : qx.moveTo(x,y);
+  }
+  qx.stroke();
+  txt("continuous", rm + 4, yB, col.accent);
+}
+function qFrame(){
+  if(!QW) return;
+  qt += dt;
+  qx.clearRect(0, 0, QW, QH);
+  qx.font = '10px "IBM Plex Mono", monospace'; qx.textBaseline = "middle";
+  [s0, s1, s2][qsel]();
+}
+
+/* ---- page 2: the two-bottle run ---- */
+const pCv = document.getElementById("cap"), px = pCv.getContext("2d");
+let PW = 0, PH = 0, pt = 0, stim = "glu", gut = true;
+const HINTS = {
+  "glu-on":"near-exclusive on sugar by 48 h.",
+  "mdg-on":"non-metabolizable — and it still switches. the molecule, not the calories.",
+  "ace-on":"sweet on the tongue. silent in the gut. no preference forms.",
+  "glu-off":"silence the gut-to-brain relay and the preference never develops.",
+  "mdg-off":"same molecule, same gut — but nothing reaches the brainstem.",
+  "ace-off":"nothing to silence. it never used that channel."
+};
+function prefResize(){
+  const r = pCv.getBoundingClientRect();
+  if(!r.width) return;
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  PW = r.width; PH = r.height;
+  pCv.width = Math.round(PW*dpr); pCv.height = Math.round(PH*dpr);
+  px.setTransform(dpr,0,0,dpr,0,0);
+}
+function prefAt(h){
+  if(!gut || stim === "ace") return 0.5 + 0.012*Math.sin(h*0.9);
+  const lag = stim === "mdg" ? 13 : 10;
+  const tau = stim === "mdg" ? 12 : 9;
+  const amp = stim === "mdg" ? 0.40 : 0.455;
+  if(h < lag) return 0.5 + 0.012*Math.sin(h*0.9);
+  return 0.5 + amp*(1 - Math.exp(-(h-lag)/tau));
+}
+function prefFrame(){
+  if(!PW) return;
+  pt += dt;
+  const lm = 40, rm = 92, top = 18, bot = PH - 26, pw = PW - lm - rm, ph = bot - top;
+  const Y = v => bot - v*ph;
+  px.clearRect(0,0,PW,PH);
+  px.font = '10px "IBM Plex Mono", monospace'; px.textBaseline = "middle";
+
+  px.strokeStyle = col.rule; px.lineWidth = 1;
+  px.beginPath(); px.moveTo(lm, bot); px.lineTo(lm+pw, bot); px.stroke();
+  px.setLineDash([2,3]);
+  [0.5, 1].forEach(v => { px.beginPath(); px.moveTo(lm, Y(v)); px.lineTo(lm+pw, Y(v)); px.stroke(); });
+  px.setLineDash([]);
+  px.fillStyle = col.muted; px.textAlign = "right";
+  px.fillText("100%", lm - 6, Y(1)); px.fillText("50%", lm - 6, Y(0.5)); px.fillText("0", lm - 6, Y(0));
+  px.textAlign = "left";
+  ["0 h","12","24","36","48 h"].forEach((s,i)=>{
+    const x = lm + pw*i/4;
+    px.fillStyle = col.muted; px.textAlign = i===0 ? "left" : (i===4 ? "right" : "center");
+    px.fillText(s, x, PH - 11);
+  });
+
+  const p = Math.min(1, (pt*0.14) % 1.55);
+  const c = (!gut || stim === "ace") ? col.muted : col.accent;
+  px.strokeStyle = c; px.lineWidth = 1.9; px.beginPath();
+  const n = 220; let hx = lm, hy = Y(0.5);
+  for(let j=0;j<=n*p;j++){
+    const u = j/n, x = lm + u*pw, y = Y(prefAt(u*48));
+    j ? px.lineTo(x,y) : px.moveTo(x,y);
+    hx = x; hy = y;
+  }
+  px.stroke();
+  px.lineTo(hx, Y(0)); px.lineTo(lm, Y(0)); px.closePath();
+  px.fillStyle = c; px.globalAlpha = .1; px.fill(); px.globalAlpha = 1;
+
+  px.fillStyle = col.panel; px.beginPath(); px.arc(hx,hy,6,0,7); px.fill();
+  px.fillStyle = col.accent2; px.beginPath(); px.arc(hx,hy,3.5,0,7); px.fill();
+
+  const v = prefAt(Math.min(48, p*48));
+  px.fillStyle = col.ink; px.textAlign = "left";
+  px.font = '500 12px "IBM Plex Mono", monospace';
+  px.fillText(Math.round(v*100) + "%", lm + pw + 10, hy);
+  px.font = '10px "IBM Plex Mono", monospace';
+  px.fillStyle = col.muted;
+  px.fillText("bottle A", lm + pw + 10, hy + 14);
+  px.fillStyle = col.accent; px.textAlign = "left";
+  px.fillText("% licks from the test bottle", lm, top - 6);
+}
+function setStim(s, el){
+  stim = s;
+  ["s-glu","s-ace","s-mdg"].forEach(id => document.getElementById(id).setAttribute("aria-pressed","false"));
+  el.setAttribute("aria-pressed","true");
+  pt = 0;
+  document.getElementById("hint").textContent = HINTS[stim + (gut ? "-on" : "-off")];
+}
+function setGut(on){
+  gut = on;
+  document.getElementById("g-on").setAttribute("aria-pressed", on ? "true":"false");
+  document.getElementById("g-off").setAttribute("aria-pressed", on ? "false":"true");
+  pt = 0;
+  document.getElementById("hint").textContent = HINTS[stim + (gut ? "-on" : "-off")];
+}
+document.getElementById("s-glu").addEventListener("click", e => setStim("glu", e.currentTarget));
+document.getElementById("s-ace").addEventListener("click", e => setStim("ace", e.currentTarget));
+document.getElementById("s-mdg").addEventListener("click", e => setStim("mdg", e.currentTarget));
+document.getElementById("g-on").addEventListener("click", () => setGut(true));
+document.getElementById("g-off").addEventListener("click", () => setGut(false));
+
+readColors();
+new ResizeObserver(prefResize).observe(pCv);
+new ResizeObserver(qResize).observe(qCv);
+new ResizeObserver(resize).observe(cv);
+addEventListener("resize", resize);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColors);
+new MutationObserver(readColors).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+resize();
+select(0);
+show((location.hash || "").replace("#","") || 1, false);
+requestAnimationFrame(draw);
+</script>
+
+</body>
+</html>
